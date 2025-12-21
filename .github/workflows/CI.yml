@@ -192,8 +192,10 @@ jobs:
   update-newtag-in-weather-service:
     runs-on: ubuntu-latest
 
-    needs: push
-
+    needs: 
+     - push
+     - update-newtag-in-auth-service
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
@@ -215,7 +217,9 @@ jobs:
   update-newtag-in-UI-service:
     runs-on: ubuntu-latest
 
-    needs: push
+    needs: 
+      - push
+      - update-newtag-in-weather-service
 
     steps:
     - name: Checkout repository
