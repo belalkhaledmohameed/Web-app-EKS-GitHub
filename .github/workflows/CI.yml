@@ -168,7 +168,7 @@ jobs:
         file: ./weather/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/weather:${{github.run_id}}
-  update-newtag-in-auth-service:
+  update-newtag-in-helm-chart:
     runs-on: ubuntu-latest
     needs: push
 
