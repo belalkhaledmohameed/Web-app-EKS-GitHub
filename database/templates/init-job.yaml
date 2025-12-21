@@ -32,4 +32,4 @@ spec:
           GRANT ALL PRIVILEGES ON weatherapp.* TO '${MYSQL_USER}'@'%';
           FLUSH PRIVILEGES;
           EOF
-      restartPolicy: Never
+      restartPolicy: OnFailure

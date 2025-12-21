@@ -22,15 +22,12 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: root-password
-       
-        
-            
   volumeClaimTemplates:
   - metadata:
       name: mysql-persistent-storage
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "standard"
+      storageClassName: "gp3"
       resources:
         requests:
-          storage: 3Gi
+          storage: 5Gi
