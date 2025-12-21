@@ -167,7 +167,7 @@ jobs:
         file: ./weather/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/weather:${{github.run_id}}
-  update-newtag-in-helm-chart:
+  update-newtag-in-auth-service:
     runs-on: ubuntu-latest
 
     needs: push
@@ -189,5 +189,50 @@ jobs:
         git add auth_helm/values.yaml
         git commit -m "Update tag in Helm chart"
         git push
+  update-newtag-in-weather-service:
+    runs-on: ubuntu-latest
+
+    needs: push
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        token: ${{ secrets.TOKEN }}
+
+    - name: Update tag in Helm chart
+      run: |
+        sed -i 's/tag: .*/tag: "${{github.run_id}}"/' weather_helm/values.yaml
+
+    - name: Commit and push change
+      run: |
+        git config --global user.email "www.bk3344@gmail.com"
+        git config --global user.name "belalkhaled"
+        git add weather_helm/values.yaml
+        git commit -m "Update tag in Helm chart"
+        git push
     
-      
+  update-newtag-in-UI-service:
+    runs-on: ubuntu-latest
+
+    needs: push
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+      with:
+        token: ${{ secrets.TOKEN }}
+
+    - name: Update tag in Helm chart
+      run: |
+        sed -i 's/tag: .*/tag: "${{github.run_id}}"/' ui_helm/values.yaml
+
+    - name: Commit and push change
+      run: |
+        git config --global user.email "www.bk3344@gmail.com"
+        git config --global user.name "belalkhaled"
+        git add ui_helm/values.yaml
+        git commit -m "Update tag in Helm chart"
+        git push
+    
+          
