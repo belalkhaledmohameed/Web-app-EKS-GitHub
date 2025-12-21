@@ -182,26 +182,14 @@ jobs:
       run: |
         sed -i 's/tag: .*/tag: "${{github.run_id}}"/' auth_helm/values.yaml
 
-    - name: Commit and push change
-      run: |
+    
         git config --global user.email "www.bk3344@gmail.com"
         git config --global user.name "belalkhaled"
         git add auth_helm/values.yaml
         git commit -m "Update tag in auth service"
+        git pull --rebase
         git push
-  update-newtag-in-weather-service:
-    runs-on: ubuntu-latest
-
-    needs: 
-  
-     - update-newtag-in-auth-service
-    
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
-      with:
-        token: ${{ secrets.TOKEN }}
-
+ 
     - name: Update tag in weather chart
       run: |
         sed -i 's/tag: .*/tag: "${{github.run_id}}"/' weather_helm/values.yaml
@@ -212,20 +200,10 @@ jobs:
         git config --global user.name "belalkhaled"
         git add weather_helm/values.yaml
         git commit -m "Update tag in weather service"
+        git pull --rebase
         git push
     
-  update-newtag-in-UI-service:
-    runs-on: ubuntu-latest
-
-    needs: 
-      
-      - update-newtag-in-weather-service
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
-      with:
-        token: ${{ secrets.TOKEN }}
+  
 
     - name: Update tag in ui chart
       run: |
@@ -237,6 +215,7 @@ jobs:
         git config --global user.name "belalkhaled"
         git add ui_helm/values.yaml
         git commit -m "Update tag in ui service"
+        git pull --rebase
         git push
     
           
