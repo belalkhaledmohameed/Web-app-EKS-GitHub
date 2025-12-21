@@ -1,0 +1,40 @@
+on:
+  push:
+    branches:
+      - Delete_Deploying
+jobs:
+  run-DevOps_Project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Configure kubectl
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: install EKS
+        run: |
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin/
+          eksctl version
+      
+      - name: Check if EKS cluster exists
+        id: check-eks
+        run: |
+          if aws eks describe-cluster --name demo-cluster --region us-east-1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            eksctl delete cluster --name demo-cluster --region us-east-1 
+            
+      
+            
+      
+         
+
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            eksctl create cluster --name demo-cluster --region us-east-1 
+            
+          
+          fi

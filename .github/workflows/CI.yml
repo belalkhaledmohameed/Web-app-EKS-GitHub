@@ -1,0 +1,171 @@
+name: CI
+
+# Exclude the workflow to run on changes to the helm chart
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+     
+      - 'kubernetes/**'
+      - 'README.md'
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: appdb
+        ports:
+          - "3306:3306"
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ----------------------------
+      # 🚀 1. Build & Test Go Backend
+      # ----------------------------
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Install Go Dependencies
+        run: go mod download
+        working-directory: ./auth   # ← مجلد الـ backend
+
+      - name: Run Go Tests
+        run: go test ./...
+        working-directory: ./auth
+
+      # ----------------------------
+      # 🎨 2. Build & Test Node.js UI
+      # ----------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3️⃣ Install validator dependencies
+      - name: Install dependencies
+        run: |
+          npm install -g ajv-cli jsonlint
+
+      # 4️⃣ Check JSON syntax
+      - name: Lint all JSON files
+        run: |
+          find data -name "*.json" -print0 | xargs -0 jsonlint -q
+
+
+    
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          
+          pip install flake8 black bandit pytest
+
+      # 4️⃣ Run Linter (Flake8)
+      - name: Run Flake8
+        id: lint
+        run:  |
+         set +e
+         flake8 ./weather
+         echo "flake_exit=$?" >> $GITHUB_OUTPUT
+         set -e
+         
+        
+
+      # 5️⃣ Run Code Formatter Check (Black)
+      - name: Run Black
+        if: steps.lint.outputs.flake_exit != '0'
+        run: black  ./weather
+        
+      - name: Rerun Flake8 after formatting
+        run: flake8 ./weather || true
+        
+
+      # 6️⃣ Run Security Scan (Bandit)
+      - name: Run Bandit
+        run: bandit -r ./weather -ll || true
+
+      # # 7️⃣ Run Unit Tests
+      # - name: Run Tests
+      #   run: pytest
+  code-quality:
+    runs-on: ubuntu-latest
+    
+
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Run golangci-lint
+      uses: Mushus/golangci-linter@v1
+    - name: Rub action json code quality
+      uses: actions/checkout@v2
+    
+   
+  push:
+    runs-on: ubuntu-latest
+
+    needs: 
+    - build-test
+    - code-quality
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: List files in auth folder
+      run: ls -l 
+
+    - name: Build and Push action Data_Base
+      
+      uses: docker/build-push-action@v6
+      with:
+        context: ./UI
+        file: ./UI/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/ui:${{github.run_id}}
+    
+    - name: Build and Push action Authentication
+      uses: docker/build-push-action@v6
+      with:
+        context: ./auth
+        file: ./auth/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/auth:${{github.run_id}}
+    
+    
+      
+     
+    - name: Build and Push action weather
+      uses: docker/build-push-action@v6
+      with:
+        context: ./weather
+        file: ./weather/Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/weather:${{github.run_id}}
+    
+      
