@@ -180,13 +180,13 @@ jobs:
 
     - name: Update tag in Helm chart
       run: |
-        sed -i 's/tag: .*/tag: "${{github.run_id}}"/' auth/values.yaml
+        sed -i 's/tag: .*/tag: "${{github.run_id}}"/' auth_helm/values.yaml
 
     - name: Commit and push change
       run: |
         git config --global user.email "www.bk3344@gmail.com"
         git config --global user.name "belalkhaled"
-        git add auth/values.yaml
+        git add auth_helm/values.yaml
         git commit -m "Update tag in Helm chart"
         git push
     
