@@ -153,3 +153,22 @@ jobs:
         run: |
           kubectl apply -f controller.yaml 
           kubectl get pods -n kube-system
+      - name: Install Kubeseal CLI
+        run: |
+          # تحديد الإصدار (يمكنك تحديث الرقم لأحدث إصدار في 2025)
+          KUBESEAL_VERSION="0.21.0" 
+          
+          # تحميل الأداة
+          curl -L "github.com{KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" -o kubeseal.tar.gz
+          
+          # فك الضغط ونقلها لمسار الأوامر
+          tar -xzvf kubeseal.tar.gz kubeseal
+          sudo install -m 0755 kubeseal /usr/local/bin/kubeseal
+          
+          # مسح الملفات المؤقتة
+          rm kubeseal.tar.gz
+
+      - name: Verify Kubeseal Installation
+        run: |
+          # التأكد من أن الأداة تعمل وموجودة في المسار
+          kubeseal --version
