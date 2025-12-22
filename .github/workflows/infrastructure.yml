@@ -112,7 +112,7 @@ jobs:
       
       - name: waiting ingress controller created
         run: |
-          kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx --timeout=180s
+          
           kubectl get ing
           kubectl get pods -n ingress-nginx
       - name: Update Kubeconfig
