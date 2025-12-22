@@ -35,9 +35,7 @@ jobs:
               --from-literal=secret-key='xco0sr0fh4e52x03g9mv';  \
                }
           kubectl get secret mysql-secret -o yaml > ./database_helm/templates/mysql-secret.yaml
-      - name : create repo on github registry
-        run: |
-          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci
+      
 
       - name: adding helm repo
         run: |
