@@ -172,3 +172,9 @@ jobs:
         run: |
           # التأكد من أن الأداة تعمل وموجودة في المسار
           kubeseal --version
+      - name: helm registry login
+        run: |
+          helm registry login ghcr.io \
+            -u ${{ vars.HELM_USERNAME}} \
+            -p ${{ secrets.TOKEN}}
+
