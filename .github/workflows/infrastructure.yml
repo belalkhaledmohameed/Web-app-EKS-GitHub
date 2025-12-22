@@ -124,7 +124,11 @@ jobs:
       - name: Install Argo CD via Helm
         run: |
           # إضافة مستودع Helm الخاص بـ Argo
-          helm repo add argo argoproj.github.io
+          helm repo add argo https://argoproj.github.io/argo-helm
+          kubectl create namespace argocd
+          helm  install argocd -n argocd argo/argo-cd
+
+
           helm repo update
 
           # تنصيب Argo CD مع ضبط الـ Server ليكون LoadBalancer ليظهر لك رابط خارجي
