@@ -153,15 +153,22 @@ jobs:
         run: |
           kubectl apply -f controller.yaml 
           kubectl get pods -n kube-system
-      - name: Install kubeseal
-        run: |   
+      # - name: Install kubeseal
+      #   run: |   
         
-          KUBESEAL_URL=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | grep -oP '"browser_download_url": "\Kgithub.com[^/]+/kubeseal-[^/]+-linux-amd64.tar.gz"')
+      #     KUBESEAL_URL=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | grep -oP '"browser_download_url": "\Kgithub.com[^/]+/kubeseal-[^/]+-linux-amd64.tar.gz"')
           
-          curl -L "$KUBESEAL_URL" -o kubeseal.tar.gz
-          tar -xzvf kubeseal.tar.gz kubeseal
-          sudo install -m 0755 kubeseal /usr/local/bin/kubeseal
-          kubeseal --version
+      #     curl -L "$KUBESEAL_URL" -o kubeseal.tar.gz
+      #     tar -xzvf kubeseal.tar.gz kubeseal
+      #     sudo install -m 0755 kubeseal /usr/local/bin/kubeseal
+      #     kubeseal --version
+      - name: Install Argo CD CLI
+        run: |
+            curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+            chmod +x argocd
+            sudo mv argocd /usr/local/bin/
+            argocd version --client
+
 
 
 
