@@ -1,0 +1,98 @@
+name: Build Cluster Infrastructure 
+
+# Exclude the workflow to run on changes to the helm chart
+on:
+  workflow_dispatch
+
+jobs:
+  run-DevOps_Project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Configure kubectl
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: install EKS
+        run: |
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin/
+          eksctl version
+          pwd
+      - name: Check if EKS cluster exists
+        id: check-eks
+        run: |
+          
+            if aws eks describe-cluster --name demo-cluster --region us-east-1; then
+               echo "exists=true" >> $GITHUB_OUTPUT
+               aws eks update-kubeconfig --region us-east-1 --name demo-cluster
+
+            else
+               echo "exists=false" >> $GITHUB_OUTPUT
+               eksctl create cluster --name demo-cluster --region us-east-1 
+            
+          
+             fi
+      
+      - name: list cluster
+        run: aws eks list-clusters
+      - name: download policy 
+        run: |
+          curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-ebs-csi-driver/master/docs/example-iam-policy.json
+          POLICY_NAME="AmazonEKS_EBS_CSI_Policy"
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          POLICY_ARN="arn:aws:iam::$ACCOUNT_ID:policy/$POLICY_NAME"
+          if aws iam get-policy --policy-arn $POLICY_ARN >/dev/null 2>&1; then
+            echo "policy exist"
+          else
+            echo "policy not exist , kindly create"
+            aws iam create-policy \
+              --policy-name $POLICY_NAME \
+              --policy-document file://example-iam-policy.json
+          fi
+      - name: attach policy
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          POLICY_ARN="arn:aws:iam::$ACCOUNT_ID:policy/AmazonEKS_EBS_CSI_Policy"
+          ROLE_NAME=$(aws iam list-roles \
+            --query "Roles[?contains(RoleName, 'NodeInstanceRole')].RoleName" \
+            --output text)
+          echo $ROLE_NAME
+          aws iam attach-role-policy \
+            --role-name $ROLE_NAME \
+            --policy-arn $POLICY_ARN
+      - name: download aws-ebs-csi-driver 
+        run: |
+          eksctl create addon --name aws-ebs-csi-driver --cluster demo-cluster --region us-east-1
+      - name: get the addon
+        run: eksctl get addon --cluster demo-cluster --region us-east-1
+      
+      
+
+      
+      - name: waiting pod aws-ebs-csi-driver 
+        run: |
+          kubectl wait --for=condition=Ready pod \
+            -l app.kubernetes.io/name=aws-ebs-csi-driver \
+            -n kube-system --timeout=300s
+
+
+
+        
+
+
+      - name: Verify EBS CSI Status
+        run: kubectl get pods -n kube-system | grep ebs
+
+      # - name: restart addons 
+      #   run: kubectl rollout restart deployment ebs-csi-controller -n kube-system
+      - name: get the ebsi pods
+        run: |
+           
+           kubectl get pods -n kube-system | grep ebs
+      - name: apply the EBS volume 
+        run: kubectl apply -f ./Ebs-volume/ebs.yaml
+      

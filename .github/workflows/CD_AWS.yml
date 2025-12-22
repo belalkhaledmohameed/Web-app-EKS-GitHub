@@ -95,6 +95,16 @@ jobs:
            
            kubectl get pods -n kube-system | grep ebs
       
+      - name: apply the sealed secret controller
+        run: |
+           
+           kubectl apply -f controller.yaml   
+      - name: build infrastructure for argo condition
+        run: |
+          helm repo add argo https://argoproj.github.io/argo-helm
+          kubectl create namespace argocd
+          helm  install argocd -n argocd argo/argo-cd
+
          
 
 
