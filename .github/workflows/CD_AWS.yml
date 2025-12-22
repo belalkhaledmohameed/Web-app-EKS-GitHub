@@ -34,21 +34,34 @@ jobs:
               --from-literal=auth-password='my-secret-pw' \
               --from-literal=secret-key='xco0sr0fh4e52x03g9mv';  \
                }
-      - name: apply sealed secret controller
+          kubectl get secret mysql-secret -o yaml > ./database_helm/templates/mysql-secret.yaml
+      - name : create repo on github registry
         run: |
-          kubectl apply -f controller.yaml 
-      - name: Wait for Sealed Secrets Controller to be Ready
+          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci
+
+      - name: adding helm repo
         run: |
-          echo "Waiting for Sealed Secrets Controller to be fully operational..."
+          helm push database_helm-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
+      - name: waiting for database pod ready 
+        run: kubectl wait --for=condition=ready pod -l app=mysql --timeout=90s
+
+      - name: getting pods and svc
+        run: |
           
-          # الانتظار حتى يصبح الـ Deployment جاهزاً بنسبة 100%
-          kubectl wait --for=condition=available deployment/sealed-secrets-controller \
-            -n kube-system \
-            --timeout=300s
-            
-          # خطوة إضافية للتأكد من أن الـ Pod أصبح Running وجاهز للاستخدام
-          kubectl wait --for=condition=Ready pod \
-            -l app.kubernetes.io/name=sealed-secrets \
-            -n kube-system \
-            --timeout=300s
-          kubectl get pods -n kube-system
+          kubectl get pods
+          kubectl get svc
+          
+   
+     
+      - name: create Svc account on database 
+        run: |
+          kubectl exec mysql-0 -- sh -c "
+          mysql -u authuser -pmy-secret-pw <<EOF
+          SHOW DATABASES;
+          USE weatherapp;
+          SHOW TABLES;
+          EOF
+          "
+
+      
+          
