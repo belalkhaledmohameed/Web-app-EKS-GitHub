@@ -34,4 +34,21 @@ jobs:
               --from-literal=auth-password='my-secret-pw' \
               --from-literal=secret-key='xco0sr0fh4e52x03g9mv';  \
                }
-      
+      - name: apply sealed secret controller
+        run: |
+          kubectl apply -f controller.yaml 
+      - name: Wait for Sealed Secrets Controller to be Ready
+        run: |
+          echo "Waiting for Sealed Secrets Controller to be fully operational..."
+          
+          # الانتظار حتى يصبح الـ Deployment جاهزاً بنسبة 100%
+          kubectl wait --for=condition=available deployment/sealed-secrets-controller \
+            -n kube-system \
+            --timeout=300s
+            
+          # خطوة إضافية للتأكد من أن الـ Pod أصبح Running وجاهز للاستخدام
+          kubectl wait --for=condition=Ready pod \
+            -l app.kubernetes.io/name=sealed-secrets \
+            -n kube-system \
+            --timeout=300s
+          kubectl get pods -n kube-system
