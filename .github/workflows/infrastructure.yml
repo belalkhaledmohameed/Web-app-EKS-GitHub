@@ -75,9 +75,12 @@ jobs:
       
       - name: waiting pod aws-ebs-csi-driver 
         run: |
-          kubectl wait --for=condition=Ready pod \
-            -l app.kubernetes.io/name=aws-ebs-csi-driver \
-            -n kube-system --timeout=300s
+          kubectl wait deployment \
+            -n kube-system \
+            ebs-csi-controller \
+            --for=condition=Available \
+            --timeout=300s
+
 
 
 
