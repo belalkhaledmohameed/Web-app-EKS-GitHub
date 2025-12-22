@@ -155,14 +155,13 @@ jobs:
           kubectl get pods -n kube-system
       - name: Install kubeseal
         run: |   
-          KUBESEAL_URL=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest \
-            | grep '"browser_download_url"' \
-            | grep 'linux-amd64"' \
-            | cut -d '"' -f 4)
-          curl -L "$KUBESEAL_URL" -o kubeseal
-          chmod +x kubeseal
-          sudo mv kubeseal /usr/local/bin/
+        
+          KUBESEAL_VERSION="0.21.0"
+          curl -L "github.com{KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" -o kubeseal.tar.gz
+          tar -xzvf kubeseal.tar.gz kubeseal
+          sudo install -m 0755 kubeseal /usr/local/bin/kubeseal
           kubeseal --version
+
 
 
 
