@@ -38,7 +38,7 @@ jobs:
               --from-literal=secret-key='xco0sr0fh4e52x03g9mv';  \
                }
       - name: list secret created 
-        run: 
+        run: |
           kubectl get secrets
           kubectl get secrets mysql-secret -o yaml > database_helm/templates/mysql-secret.yaml
           ls -la database_helm/templates/
