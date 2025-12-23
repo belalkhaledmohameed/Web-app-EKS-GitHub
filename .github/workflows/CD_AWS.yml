@@ -37,7 +37,7 @@ jobs:
               --from-literal=auth-password='my-secret-pw' \
               --from-literal=secret-key='xco0sr0fh4e52x03g9mv';  \
                }
-          kubectl get secret mysql-secret -o yaml > /database_helm/templates/mysql-secret.yaml
+          kubectl get secret mysql-secret -o yaml > database_helm/templates/mysql-secret.yaml
       - name: Install kubeseal
         run: |
           if command -v kubeseal &> /dev/null; then
@@ -79,14 +79,14 @@ jobs:
           argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci  --username  ${{ vars.HELM_USERNAME }} --password ${{ secrets.TOKEN }}   --upsert
       - name: Encrypt database Secret
         run: |
-          kubeseal --fetch-cert > /database_helm/templates/publickey.pem
-          kubeseal --format=yaml --cert=publickey.pem < /database_helm/templates/mysql-secret.yaml > /database_helm/templates/sealedsecret.yaml
-          rm /database_helm/templates/mysql-secret.yaml
-          rm /database_helm/templates/publickey.pem
+          kubeseal --fetch-cert >   database_helm/templates/publickey.pem
+          kubeseal --format=yaml --cert=publickey.pem < database_helm/templates/mysql-secret.yaml > database_helm/templates/sealedsecret.yaml
+          rm database_helm/templates/mysql-secret.yaml
+          rm database_helm/templates/publickey.pem
           kubectl delete secret mysql-secret 
       - name: create database
         run: |
-          cd /database_helm/
+          cd database_helm/
             helm package .
             helm push database_helm-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
       - name: waiting for database pod ready 
