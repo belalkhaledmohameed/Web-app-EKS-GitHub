@@ -106,8 +106,8 @@ jobs:
           git add -A
           git commit -m "upload" || echo "No changes to commit at it"
 
-          git pull origin Deploying --rebase
-          git push origin Deploying
+          git pull  --rebase
+          git push 
       - name: waiting for database pod ready 
         run: kubectl wait --for=condition=ready pod -l app=mysql --timeout=90s
 
