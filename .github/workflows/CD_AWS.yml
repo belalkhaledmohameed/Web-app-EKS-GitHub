@@ -17,7 +17,7 @@ jobs:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.PROD_TOKEN }}
       - name: Update Kubeconfig
         run: |
           aws eks update-kubeconfig --name demo-cluster --region us-east-1
