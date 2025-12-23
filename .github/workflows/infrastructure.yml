@@ -125,13 +125,9 @@ jobs:
         run: |
           # إضافة مستودع Helm الخاص بـ Argo
           helm repo add argo https://argoproj.github.io/argo-helm
-          
-          
-
 
           helm repo update
-
-          # تنصيب Argo CD مع ضبط الـ Server ليكون LoadBalancer ليظهر لك رابط خارجي
+          
           helm upgrade --install argocd argo/argo-cd \
             --namespace argocd \
             --create-namespace \
@@ -153,28 +149,45 @@ jobs:
         run: |
           kubectl apply -f controller.yaml 
           kubectl get pods -n kube-system
-      - name: Install kubeseal
-        run: |   
-        
-          KUBESEAL_URL=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | grep -oP '"browser_download_url": "\Kgithub.com[^/]+/kubeseal-[^/]+-linux-amd64.tar.gz"')
+      - name: Install Argo CD CLI
+        run: |
           
-          curl -L "$KUBESEAL_URL" -o kubeseal.tar.gz
-          tar -xzvf kubeseal.tar.gz kubeseal
-          sudo install -m 0755 kubeseal /usr/local/bin/kubeseal
-          kubeseal --version
-
-
-
-
-
-
-
-
-
-
+            if ! command -v argocd &> /dev/null; then
+              echo "ArgoCD not found. Installing..."
+              curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+              chmod +x argocd
+              sudo mv argocd /usr/local/bin/
+              argocd version --client
+      
+            else
+              echo "ArgoCD is already installed."
+            fi
+      - name: login to argocd CLI
+        run:
+          argocd login ${{ vars.ARGOCD_URL }} --username ${{ vars.ARGOCD_USER}} --password ${{ secrets.ARGOCD_PASSWORD }} --insecure --grpc-web
       - name: helm registry login
         run: |
           helm registry login ghcr.io \
             -u ${{ vars.HELM_USERNAME}} \
             -p ${{ secrets.TOKEN}}
+      - name : create repo on github registry
+        run: |
+          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci  --username  ${{ vars.HELM_USERNAME }} --password ${{ secrets.TOKEN }}   --upsert
+      - name: Install kubeseal
+        run: |
+          if command -v kubeseal &> /dev/null; then
+            echo "kubeseal installed "
+          else
+            echo "kubeseal not installed "
+
+            VERSION=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | grep tag_name | cut -d '"' -f 4)
+            echo "Installing kubeseal version: $VERSION"
+            curl -OL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.34.0/kubeseal-0.34.0-linux-amd64.tar.gz"
+            tar -xvzf kubeseal-0.34.0-linux-amd64.tar.gz kubeseal 
+            sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+            sudo mv kubeseal /usr/local/bin/
+            kubeseal --version
+          fi
+
+
 
