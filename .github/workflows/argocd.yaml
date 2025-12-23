@@ -18,7 +18,7 @@ jobs:
           aws-region: us-east-1
       - name: login to argocd CLI
         run:
-          argocd login argocd-server --username ${{ vars.ARGOCD_USER}} --password ${{ secrets.ARGICD_PASSWORD}} --insecure
+          argocd login ${{ vars.ARGOCD_URL }} --username ${{ vars.ARGOCD_USER}} --password ${{ secrets.ARGICD_PASSWORD}} --insecure
       - name : create repo on github registry
         run: |
           argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci  --username  ${{ vars.HELM_USERNAME }} --password ${{ secrets.TOKEN }}   --core --upsert
