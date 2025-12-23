@@ -35,9 +35,14 @@ jobs:
               --from-literal=secret-key='xco0sr0fh4e52x03g9mv';  \
                }
           kubectl get secret mysql-secret -o yaml > ./database_helm/templates/mysql-secret.yaml
-      
-
-      - name: adding helm repo
+      - name: Encrypt database Secret
+        run: |
+          kubeseal --fetch-cert > ./database_helm/templates/publickey.pem
+          kubeseal --format=yaml --cert=publickey.pem < ./database_helm/templates/mysql-secret.yaml > ./database_helm/templates/sealedsecret.yaml
+          rm ./database_helm/templates/mysql-secret.yaml
+          rm ./database_helm/templates/publickey.pem
+          kubectl delete secret mysql-secret 
+      - name: create database
         run: |
           cd ./database_helm/
             helm package .
@@ -51,8 +56,6 @@ jobs:
           kubectl get pods
           kubectl get svc
           
-   
-     
       - name: create Svc account on database 
         run: |
           kubectl exec mysql-0 -- sh -c "
@@ -63,5 +66,3 @@ jobs:
           EOF
           "
 
-      
-          
