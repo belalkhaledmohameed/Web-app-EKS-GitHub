@@ -95,7 +95,7 @@ jobs:
         run: |
           cd database_helm/
             helm package .
-            helm push database_helm-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
+            helm push database-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
       - name: waiting for database pod ready 
         run: kubectl wait --for=condition=ready pod -l app=mysql --timeout=90s
 
