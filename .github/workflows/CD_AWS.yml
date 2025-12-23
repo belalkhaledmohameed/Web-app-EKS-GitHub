@@ -17,6 +17,7 @@ jobs:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+          token: ${{ secrets.TOKEN }}
       - name: Update Kubeconfig
         run: |
           aws eks update-kubeconfig --name demo-cluster --region us-east-1
@@ -91,6 +92,7 @@ jobs:
           rm database_helm/templates/mysql-secret.yaml
           rm database_helm/templates/publickey.pem
           kubectl delete secret mysql-secret 
+          ls -la database_helm/templates/
       - name: create database
         run: |
           cd database_helm/
@@ -98,8 +100,8 @@ jobs:
             helm push database-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
       - name: Commit & Push changes (safe)
         run: |
-          git config --global user.email "${{ secrets.EMAIL_GIT }}"
-          git config --global user.name "${{ secrets.EMAIL_USER }}"
+          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions"
 
           git add -A
           git commit -m "upload" || echo "No changes to commit"
