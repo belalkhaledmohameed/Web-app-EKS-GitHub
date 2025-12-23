@@ -96,6 +96,16 @@ jobs:
           cd database_helm/
             helm package .
             helm push database-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
+      - name: Commit & Push changes (safe)
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions"
+
+          git add -A
+          git commit -m "upload" || echo "No changes to commit"
+
+          git pull Deploying main --rebase
+          git push Deploying main
       - name: waiting for database pod ready 
         run: kubectl wait --for=condition=ready pod -l app=mysql --timeout=90s
 
