@@ -98,6 +98,10 @@ jobs:
           cd database_helm/
             helm package .
             helm push database-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
+      - name: apply argocd application
+        run: |
+          cd argo-cd 
+            kubectl apply -f argocd.yaml
       - name: Commit & Push changes (safe)
         run: |
           git config --global user.email "actions@github.com"
