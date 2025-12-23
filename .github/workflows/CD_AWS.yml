@@ -106,6 +106,6 @@ jobs:
           git add -A
           git commit -m "upload" || echo "No changes to commit at it"
 
-          git pull  --rebase
-          git push 
+          git pull origin Deploying  --rebase
+          git push origin Deploying
       
