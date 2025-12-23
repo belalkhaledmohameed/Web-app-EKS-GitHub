@@ -178,5 +178,6 @@ jobs:
             -p ${{ secrets.TOKEN}}
       - name : create repo on github registry
         run: |
-          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci -- core
+          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci  --username  ${{ vars.USERNAME }} --password ${{ secrets.TOKEN }}  --grpc-web --core
+
 
