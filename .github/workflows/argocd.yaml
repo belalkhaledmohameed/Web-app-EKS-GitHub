@@ -1,0 +1,26 @@
+name: Setup Argocd dependncies
+
+# Exclude the workflow to run on changes to the helm chart
+on:
+  workflow_dispatch
+
+jobs:
+  run-DevOps_Project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Configure kubectl
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: login to argocd CLI
+        run:
+          argocd login argocd-server --username ${{ vars.ARGOCD_USER}} --password ${{ secrets.ARGICD_PASSWORD}} --insecure
+      - name : create repo on github registry
+        run: |
+          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci  --username  ${{ vars.HELM_USERNAME }} --password ${{ secrets.TOKEN }}   --core --upsert
+
+
