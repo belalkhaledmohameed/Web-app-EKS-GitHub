@@ -112,4 +112,25 @@ jobs:
 
           git pull origin Deploying  --rebase
           git push origin Deploying
+      - name: waiting for database pod ready 
+        run: kubectl wait --for=condition=ready pod -l app=mysql --timeout=90s
+
+      - name: getting pods and svc
+        run: |
+          
+          kubectl get pods
+          kubectl get svc
+          
+      - name: create Svc account on database 
+        run: |
+          kubectl exec mysql-0 -- sh -c "
+          mysql -u authuser -pmy-secret-pw <<EOF
+          SHOW DATABASES;
+          USE weatherapp;
+          SHOW TABLES;
+          EOF
+          "
+
+
+
       
