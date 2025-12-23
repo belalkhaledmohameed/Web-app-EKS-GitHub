@@ -42,7 +42,7 @@ jobs:
           argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci  --username  ${{ vars.HELM_USERNAME }} --password ${{ secrets.TOKEN }}   --upsert
       - name: Install kubeseal
         run: |
-          curl -sSL -o kubeseal https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.27.1/kubeseal-linux-amd64
+          curl -fL https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.27.2/kubeseal-linux-amd64 -o kubeseal
           chmod +x kubeseal
           sudo mv kubeseal /usr/local/bin/
           kubeseal --version
