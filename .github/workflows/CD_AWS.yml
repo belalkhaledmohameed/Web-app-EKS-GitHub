@@ -29,9 +29,9 @@ jobs:
       #     kubectl get pods -n kube-system
       - name: create users in db
         run: |
-          ls -la kubernetes/authentication/mysql
+          ls -la database_helm/templates/
           kubectl get secret mysql-secret >/dev/null 2>&1 || { \
-           cd kubernetes/authentication/mysql; \
+           cd database_helm/templates/; \
            kubectl create secret generic mysql-secret \
               --from-literal=root-password='secure-root-pw' \
               --from-literal=auth-password='my-secret-pw' \
