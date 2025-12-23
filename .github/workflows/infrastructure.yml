@@ -160,21 +160,17 @@ jobs:
       #     kubeseal --version
       - name: Install Argo CD CLI
         run: |
-            curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-            chmod +x argocd
-            sudo mv argocd /usr/local/bin/
-            argocd version --client
-
-
-
-
-
-
-
-
-
-
-
+          
+            if ! command -v argocd &> /dev/null; then
+              echo "ArgoCD not found. Installing..."
+              curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+              chmod +x argocd
+              sudo mv argocd /usr/local/bin/
+              argocd version --client
+      
+            else
+              echo "ArgoCD is already installed."
+            fi
       - name: helm registry login
         run: |
           helm registry login ghcr.io \
@@ -182,5 +178,5 @@ jobs:
             -p ${{ secrets.TOKEN}}
       - name : create repo on github registry
         run: |
-          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci
+          argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci -- core
 
