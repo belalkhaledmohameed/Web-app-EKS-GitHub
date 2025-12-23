@@ -81,9 +81,12 @@ jobs:
       - name : create repo on github registry
         run: |
           argocd repo add ghcr.io/belalkhaledmohameed --type helm --name githubhelm   --enable-oci  --username  ${{ vars.HELM_USERNAME }} --password ${{ secrets.TOKEN }}   --upsert
-      - name: Encrypt database Secret
+      - name: fetch public key
         run: |
           kubeseal --fetch-cert > database_helm/templates/publickey.pem
+          ls -la database_helm/templates/
+      - name: Encrypt data
+        run: |
           kubeseal --format=yaml --cert=publickey.pem < database_helm/templates/mysql-secret.yaml > database_helm/templates/sealedsecret.yaml
           rm database_helm/templates/mysql-secret.yaml
           rm database_helm/templates/publickey.pem
