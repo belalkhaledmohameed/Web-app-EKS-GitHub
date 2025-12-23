@@ -104,7 +104,7 @@ jobs:
           git config --global user.name "github-actions"
 
           git add -A
-          git commit -m "upload" || echo "No changes to commit"
+          git commit -m "upload" || echo "No changes to commit at it"
 
           git pull origin Deploying --rebase
           git push origin Deploying
