@@ -87,7 +87,7 @@ jobs:
           ls -la database_helm/templates/
       - name: Encrypt data
         run: |
-          kubeseal --format=yaml --cert=publickey.pem < database_helm/templates/mysql-secret.yaml > database_helm/templates/sealedsecret.yaml
+          kubeseal --format=yaml --cert=database_helm/templates/publickey.pem < database_helm/templates/mysql-secret.yaml > database_helm/templates/sealedsecret.yaml
           rm database_helm/templates/mysql-secret.yaml
           rm database_helm/templates/publickey.pem
           kubectl delete secret mysql-secret 
