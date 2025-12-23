@@ -37,7 +37,7 @@ jobs:
               --from-literal=auth-password='my-secret-pw' \
               --from-literal=secret-key='xco0sr0fh4e52x03g9mv';  \
                }
-          cd database_helm/templates/
+           cd database_helm/templates/
             kubectl get secrets mysql-secret -o yaml >  mysql-secret.yaml
       - name: Install kubeseal
         run: |
