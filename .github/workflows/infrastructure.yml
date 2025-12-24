@@ -165,6 +165,9 @@ jobs:
       - name: login to argocd CLI
         run:
           argocd login ${{ vars.ARGOCD_URL }} --username ${{ vars.ARGOCD_USER}} --password ${{ secrets.ARGOCD_PASSWORD }} --insecure --grpc-web
+      - name: update Argocd Password
+        run: |
+          argocd account update-password --current-password ${{ secrets.ARGOCD_PASSWORD }}  --new-password ${{ secrets.ARGOCD_PASSWORD2 }}
       - name: helm registry login
         run: |
           helm registry login ghcr.io \
