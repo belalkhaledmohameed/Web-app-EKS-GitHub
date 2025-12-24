@@ -187,6 +187,8 @@ jobs:
           kubeseal --format=yaml --cert=ui_helm/templates/uipublickey.pem < ui_helm/templates/weatherapp-ui-tls.yaml > ui_helm/templates/uisealedsecret.yaml
           rm ui_helm/templates/weatherapp-ui-tls.yaml
           rm ui_helm/templates/uipublickey.pem
+          rm ui_helm/templates/tls.crt
+          rm ui_helm/templates/tls.key
           kubectl delete secret weatherapp-ui-tls
           ls -la ui_helm/templates/
       - name: Authenticated on datavase
