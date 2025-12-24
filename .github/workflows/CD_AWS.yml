@@ -162,12 +162,13 @@ jobs:
           kubectl get svc
       - name: create certificate in UI service
         run: |
-         kubectl get secret weatherapp-ui-tls >/dev/null 2>&1 || { \
-          cd ui_helm/templates/; \
-            openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
-            ls -la
-            kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key; \ 
-                }
+         if ! kubectl get secret weatherapp-ui-tls >/dev/null 2>&1; then
+            cd ui_helm/templates/
+            openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+              -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
+            kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key
+          fi
+
       
       - name: convert secret to yaml file
         run: |
