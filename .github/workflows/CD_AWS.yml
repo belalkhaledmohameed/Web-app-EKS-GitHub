@@ -102,16 +102,7 @@ jobs:
         run: |
           cd argo-cd 
             kubectl apply -f argocd.yaml
-      # - name: Commit & Push changes (safe)
-      #   run: |
-      #     git config --global user.email "actions@github.com"
-      #     git config --global user.name "github-actions"
-
-      #     git add -A
-      #     git commit -m "upload" || echo "No changes to commit at it"
-
-      #     git pull origin Deploying  --rebase
-      #     git push origin Deploying
+      
       - name: waiting for database pod ready 
         run: kubectl wait --for=condition=ready pod -l app=mysql --timeout=90s
 
@@ -135,6 +126,42 @@ jobs:
           cd auth_helm/
             helm package .
             helm push auth-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
+      - name: getting pods and svc
+        run: |
+          
+          kubectl get pods
+          kubectl get svc
+      - name: create secret for weather service
+        run: |
+           kubectl get secret weather >/dev/null 2>&1 || { \
+           cd weather_helm/templates/; \
+              kubectl create secret generic weather \
+                --from-literal=apikey=dd14af1bc5msh2f2906c42d09a2fp1632d8jsnef251bbd6cc6;  \ 
+                  }
+      - name: convert secret to yaml file
+        run:
+          kubectl get secrets weather -o yaml > weather_helm/templates/weather.yaml
+      - name: fecth publickey and ecrypt data for weather service
+        run: |
+          kubeseal --fetch-cert > weather_helm/templates/publickey.pem
+          ls -la weather_helm/templates/
+          kubeseal --format=yaml --cert=weather_helm/templates/publickey.pem < weather_helm/templates/weather.yaml > weather_helm/templates/sealedsecret.yaml
+          rm weather_helm/templates/weather.yaml
+          rm weather_helm/templates/publickey.pem
+          kubectl delete secret weather 
+          ls -la weather_helm/templates/
+      - name: create weather service 
+        run: | 
+          cd weather_helm/
+            helm package .
+            helm push weather-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
+      - name: getting pods and svc
+        run: |
+          kubectl get secrets
+          kubectl get pods
+          kubectl get svc
+
+
       
 
 
