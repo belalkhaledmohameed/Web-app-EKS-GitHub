@@ -164,14 +164,16 @@ jobs:
         run: |
          kubectl get secret weatherapp-ui-tls >/dev/null 2>&1 || { \
           cd ui_helm/templates/; \
-            openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
-              kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key; \ 
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
+          kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key; \ 
                 }
       
       - name: convert secret to yaml file
         run: |
+          
           kubectl get secrets weatherapp-ui-tls -o yaml > ui_helm/templates/weatherapp-ui-tls.yaml
           ls -la ui_helm/templates/
+          cat ui_helm/templates/weatherapp-ui-tls.yaml
       - name: fecth publickey and ecrypt data for weather service
         run: |
           kubeseal --fetch-cert > ui_helm/templates/uipublickey.pem
