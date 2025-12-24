@@ -165,11 +165,13 @@ jobs:
          if ! kubectl get secret weatherapp-ui-tls >/dev/null 2>&1; then
           kubectl delete secret weatherapp-ui-tls
          else
-            cd ui_helm/templates/
-            openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+          echo "Secret does not exist, will create it..."
+         fi
+         cd ui_helm/templates/
+         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
               -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
-            kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key
-          fi
+         kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key
+          
 
       
       - name: convert secret to yaml file
