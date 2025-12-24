@@ -160,6 +160,50 @@ jobs:
           kubectl get secrets
           kubectl get pods
           kubectl get svc
+      - name: create certificate in UI service
+        run: |
+         kubectl get secret weatherapp-ui-tls >/dev/null 2>&1 || { \
+          cd kubernetes/ui; \
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
+          kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key; \ 
+                }
+      - name: Run EKS Cluster
+        run:  |
+
+          eksctl utils write-kubeconfig --cluster demo-cluster  --region us-east-1 
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/aws/deploy.yaml
+          kubectl get ing
+      - name: convert secret to yaml file
+        run:
+          kubectl get secrets weatherapp-ui-tls -o yaml > ui_helm/templates/weatherapp-ui-tls.yaml
+      - name: fecth publickey and ecrypt data for weather service
+        run: |
+          kubeseal --fetch-cert > ui_helm/templates/uipublickey.pem
+          ls -la ui_helm/templates/
+          kubeseal --format=yaml --cert=ui_helm/templates/uipublickey.pem < ui_helm/templates/weatherapp-ui-tls.yaml > ui_helm/templates/uisealedsecret.yaml
+          rm ui_helm/templates/weatherapp-ui-tls.yaml
+          rm ui_helm/templates/uipublickey.pem
+          rm ui_helm/templates/tls.crt
+          rm ui_helm/templates/tls.key
+          kubectl delete secret weatherapp-ui-tls
+          ls -la ui_helm/templates/
+      - name: waiting for database pod ready 
+        run: kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=weatherapp-ui --timeout=180s
+      - name: Get Load Balancer DNS name
+        id: get_dns
+        run: |
+            ELB_DNS=$(kubectl get ing weatherapp-ui-ingress -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+            echo "ELB_DNS=$ELB_DNS" >> $GITHUB_ENV
+            echo "DNS Address: $ELB_DNS"
+      - name: list nodes-ips and ingress-ips
+        run: |
+          kubectl get nodes -o wide
+          kubectl get ing
+          nslookup $ELB_DNS
+          kubectl get svc
+          kubectl get pods
+      
+      
 
 
       

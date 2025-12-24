@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: weatherapp-ui
-          image: "belalkhaled/ui:lab"
+          image: "belalkhaled/ui:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           env:
           - name: AUTH_HOST
