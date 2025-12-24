@@ -134,7 +134,7 @@ jobs:
       - name: create secret for weather service
         run: |
            kubectl get secret weather >/dev/null 2>&1 || { \
-           cd weather_helm/templates/; \
+            cd weather_helm/templates/; \
               kubectl create secret generic weather \
                 --from-literal=apikey=dd14af1bc5msh2f2906c42d09a2fp1632d8jsnef251bbd6cc6;  \ 
                   }
