@@ -163,14 +163,14 @@ jobs:
       - name: create certificate in UI service
         run: |
          if ! kubectl get secret weatherapp-ui-tls >/dev/null 2>&1; then
-          kubectl delete secret weatherapp-ui-tls
-         else
-          echo "Secret does not exist, will create it..."
-         fi
-         cd ui_helm/templates/
-         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+          cd ui_helm/templates/
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
               -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
-         kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key
+          kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key
+         else
+          echo "Secret  exist"
+         fi
+         
           
 
       
