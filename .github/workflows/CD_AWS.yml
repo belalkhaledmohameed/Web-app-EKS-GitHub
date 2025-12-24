@@ -62,7 +62,7 @@ jobs:
         run: |
           
             if ! command -v argocd &> /dev/null; then
-              echo "ArgoCD not found. Installing..."
+              echo "ArgoCD not found. Installing...."
               curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
               chmod +x argocd
               sudo mv argocd /usr/local/bin/
