@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: weatherapp-weather
-          image: "belalkhaled/weatherapp-weather:{{ .Values.image.tag }}"
+          image: "belalkhaled/weather:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           env:
           - name: APIKEY
