@@ -49,7 +49,6 @@ jobs:
             echo "kubeseal installed "
           else
             echo "kubeseal not installed "
-
             VERSION=$(curl -s https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest | grep tag_name | cut -d '"' -f 4)
             echo "Installing kubeseal version: $VERSION"
             curl -OL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.34.0/kubeseal-0.34.0-linux-amd64.tar.gz"
@@ -188,9 +187,6 @@ jobs:
           echo "Secret  exist"
          fi
          
-          
-
-      
       # - name: convert secret to yaml file
       #   run: |
       #     ls -la ui_helm/templates/
