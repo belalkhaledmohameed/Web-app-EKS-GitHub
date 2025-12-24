@@ -143,11 +143,11 @@ jobs:
           kubectl get secrets weather -o yaml > weather_helm/templates/weather.yaml
       - name: fecth publickey and ecrypt data for weather service
         run: |
-          kubeseal --fetch-cert > weather_helm/templates/publickey.pem
+          kubeseal --fetch-cert > weather_helm/templates/wepublickey.pem
           ls -la weather_helm/templates/
-          kubeseal --format=yaml --cert=weather_helm/templates/publickey.pem < weather_helm/templates/weather.yaml > weather_helm/templates/sealedsecret.yaml
+          kubeseal --format=yaml --cert=weather_helm/templates/wepublickey.pem < weather_helm/templates/weather.yaml > weather_helm/templates/wesealedsecret.yaml
           rm weather_helm/templates/weather.yaml
-          rm weather_helm/templates/publickey.pem
+          rm weather_helm/templates/wepublickey.pem
           kubectl delete secret weather 
           ls -la weather_helm/templates/
       - name: create weather service 
