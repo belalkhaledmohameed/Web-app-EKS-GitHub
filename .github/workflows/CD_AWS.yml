@@ -170,24 +170,11 @@ jobs:
           cd ui_helm/templates/
           openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
               -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
-          
           kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key
-         else
-          echo "Secret  exist"
-         fi
-         
-          
-
-      
-      - name: convert secret to yaml file
-        run: |
           ls -la ui_helm/templates/
-          
           kubectl get secrets weatherapp-ui-tls -o yaml > ui_helm/templates/weatherapp-ui-tls.yaml
           ls -la ui_helm/templates/
           cat ui_helm/templates/weatherapp-ui-tls.yaml
-      - name: fecth publickey and ecrypt data for weather service
-        run: |
           kubeseal --fetch-cert > ui_helm/templates/uipublickey.pem
           ls -la ui_helm/templates/
           kubeseal --format=yaml --cert=ui_helm/templates/uipublickey.pem < ui_helm/templates/weatherapp-ui-tls.yaml > ui_helm/templates/uisealedsecret.yaml
@@ -197,6 +184,31 @@ jobs:
           rm ui_helm/templates/tls.key
           kubectl delete secret weatherapp-ui-tls
           ls -la ui_helm/templates/
+         else
+          echo "Secret  exist"
+         fi
+         
+          
+
+      
+      # - name: convert secret to yaml file
+      #   run: |
+      #     ls -la ui_helm/templates/
+          
+      #     kubectl get secrets weatherapp-ui-tls -o yaml > ui_helm/templates/weatherapp-ui-tls.yaml
+      #     ls -la ui_helm/templates/
+      #     cat ui_helm/templates/weatherapp-ui-tls.yaml
+      # - name: fecth publickey and ecrypt data for weather service
+      #   run: |
+      #     kubeseal --fetch-cert > ui_helm/templates/uipublickey.pem
+      #     ls -la ui_helm/templates/
+      #     kubeseal --format=yaml --cert=ui_helm/templates/uipublickey.pem < ui_helm/templates/weatherapp-ui-tls.yaml > ui_helm/templates/uisealedsecret.yaml
+      #     rm ui_helm/templates/weatherapp-ui-tls.yaml
+      #     rm ui_helm/templates/uipublickey.pem
+      #     rm ui_helm/templates/tls.crt
+      #     rm ui_helm/templates/tls.key
+      #     kubectl delete secret weatherapp-ui-tls
+      #     ls -la ui_helm/templates/
       - name: create UI service
         run: |
           cd ui_helm/
