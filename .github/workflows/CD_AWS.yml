@@ -98,17 +98,21 @@ jobs:
           cd database_helm/
             helm package .
             helm push database-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
-      - name: apply argocd application
+      - name: Recreate Argo CD Application
         run: |
-          cd argo-cd 
-            kubectl apply -f argocd.yaml
+          if kubectl get application argocd >/dev/null 2>&1; then
+            echo "Argo CD application exists, deleting..."
+            kubectl delete -f argo-cd/argocd.yaml --wait
+          else
+            echo "Argo CD application not found, will create..."
+          fi
+          kubectl apply -f argo-cd/argocd.yaml
       
       - name: waiting for database pod ready 
         run: kubectl wait --for=condition=ready pod -l app=mysql --timeout=90s
 
       - name: getting pods and svc
         run: |
-          
           kubectl get pods
           kubectl get svc
           
