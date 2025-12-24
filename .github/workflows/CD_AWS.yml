@@ -169,7 +169,7 @@ jobs:
                 }
       
       - name: convert secret to yaml file
-        run:
+        run: |
           kubectl get secrets weatherapp-ui-tls -o yaml > ui_helm/templates/weatherapp-ui-tls.yaml
           ls -la ui_helm/templates/
       - name: fecth publickey and ecrypt data for weather service
