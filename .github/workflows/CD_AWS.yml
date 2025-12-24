@@ -167,11 +167,11 @@ jobs:
             openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=weatherapp.local/O=weatherapp"
             ls -la
             kubectl create secret tls weatherapp-ui-tls --cert=tls.crt --key=tls.key; \ 
-                }
+              }
       
       - name: convert secret to yaml file
         run: |
-          
+          ls -la ui_helm/templates/
           kubectl get secrets weatherapp-ui-tls -o yaml > ui_helm/templates/weatherapp-ui-tls.yaml
           ls -la ui_helm/templates/
           cat ui_helm/templates/weatherapp-ui-tls.yaml
