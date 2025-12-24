@@ -130,6 +130,12 @@ jobs:
           SHOW TABLES;
           EOF
           "
+      - name: Authenticated on datavase
+        run: |
+          cd auth_helm/
+            helm package .
+            helm push auth-0.1.0.tgz oci://ghcr.io/belalkhaledmohameed/githubhelm
+      
 
 
 
