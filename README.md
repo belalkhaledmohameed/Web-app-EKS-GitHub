@@ -34,10 +34,12 @@ Docker image build
 Image push to container registry
 Helm chart update
 Automatic deployment to AWS EKS via Kubernetes
+======================================================================================================================================================
 ☁️ Cloud Infrastructure
 AWS EKS for Kubernetes cluster
 Managed Kubernetes nodes
 Secure networking and IAM integration
+======================================================================================================================================================
 📦 Deployment Flow
 Copy code
 Text
@@ -47,6 +49,7 @@ Developer → GitHub Repo
         → Helm Deployment
         → AWS EKS Cluster
         → Running Application
+======================================================================================================================================================
 🚀 Why This Project?
 This project demonstrates:
 Real-world DevOps workflow
@@ -54,6 +57,7 @@ Secure Kubernetes deployments
 CI/CD automation
 Cloud-native application deployment
 Best practices for production-ready systems
+======================================================================================================================================================
 🧠 Skills Demonstrated
 DevOps Engineering
 Kubernetes & Helm
