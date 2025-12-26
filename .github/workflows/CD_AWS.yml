@@ -1,12 +1,12 @@
 name: Production
 
-# Exclude the workflow to run on changes to the helm chart
+
 on:
   push:
     branches:
       - Deploying
 jobs:
-  run-DevOps_Project:
+  Deploy_APP_on_EKS_Cluster:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,10 +24,7 @@ jobs:
 
          
 
-      # - name: apply sealed secret controller
-      #   run: |
-      #     kubectl apply -f controller.yaml 
-      #     kubectl get pods -n kube-system
+      
       - name: create users in db
         run: |
           ls -la database_helm/templates/
@@ -124,7 +121,7 @@ jobs:
           SHOW TABLES;
           EOF
           "
-      - name: Authenticated on datavase
+      - name: Authenticated on database
         run: |
           cd auth_helm/
             helm package .
@@ -187,24 +184,7 @@ jobs:
           echo "Secret  exist"
          fi
          
-      # - name: convert secret to yaml file
-      #   run: |
-      #     ls -la ui_helm/templates/
-          
-      #     kubectl get secrets weatherapp-ui-tls -o yaml > ui_helm/templates/weatherapp-ui-tls.yaml
-      #     ls -la ui_helm/templates/
-      #     cat ui_helm/templates/weatherapp-ui-tls.yaml
-      # - name: fecth publickey and ecrypt data for weather service
-      #   run: |
-      #     kubeseal --fetch-cert > ui_helm/templates/uipublickey.pem
-      #     ls -la ui_helm/templates/
-      #     kubeseal --format=yaml --cert=ui_helm/templates/uipublickey.pem < ui_helm/templates/weatherapp-ui-tls.yaml > ui_helm/templates/uisealedsecret.yaml
-      #     rm ui_helm/templates/weatherapp-ui-tls.yaml
-      #     rm ui_helm/templates/uipublickey.pem
-      #     rm ui_helm/templates/tls.crt
-      #     rm ui_helm/templates/tls.key
-      #     kubectl delete secret weatherapp-ui-tls
-      #     ls -la ui_helm/templates/
+      
       - name: create UI service
         run: |
           cd ui_helm/

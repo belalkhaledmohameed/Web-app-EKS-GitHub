@@ -3,7 +3,7 @@ on:
     branches:
       - Delete_Deploying
 jobs:
-  run-DevOps_Project:
+  Delete_Cluster:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
