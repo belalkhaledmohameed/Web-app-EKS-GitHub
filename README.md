@@ -13,6 +13,7 @@ Fully automated deployment pipeline
 🔹 Backend & Application
 RESTful API
 Database for authentication & user data
+======================================================================================================================================================
 🔹 DevOps & Infrastructure
 Docker – Containerizing the application
 Kubernetes (EKS) – Container orchestration
@@ -20,10 +21,12 @@ Helm – Kubernetes package management
 Sealed Secrets – Secure secret encryption (instead of plain base64)
 GitHub Actions – CI/CD pipeline automation
 AWS – Cloud infrastructure (EKS Cluster)
+======================================================================================================================================================
 🔐 Security Implementation
 Kubernetes Secrets are encrypted using Sealed Secrets
 Prevents exposing sensitive data in Git repositories
 Secrets are safely decrypted only inside the Kubernetes cluster
+======================================================================================================================================================
 🔄 CI/CD Pipeline
 The project uses GitHub Actions to automate:
 Code checkout
