@@ -1,6 +1,6 @@
 name: Production
 
-# Exclude the workflow to run on changes to the helm chart
+
 on:
   push:
     branches:
@@ -24,10 +24,7 @@ jobs:
 
          
 
-      # - name: apply sealed secret controller
-      #   run: |
-      #     kubectl apply -f controller.yaml 
-      #     kubectl get pods -n kube-system
+      
       - name: create users in db
         run: |
           ls -la database_helm/templates/
