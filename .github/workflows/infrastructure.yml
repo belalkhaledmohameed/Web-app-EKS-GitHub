@@ -1,6 +1,6 @@
 name: Build Cluster Infrastructure 
 
-# Exclude the workflow to run on changes to the helm chart
+
 on:
   workflow_dispatch
 
