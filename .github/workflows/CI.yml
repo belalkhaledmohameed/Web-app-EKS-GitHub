@@ -6,7 +6,6 @@ on:
     branches:
       - main
     paths-ignore:
-     
       - 'kubernetes/**'
       - '**/README.md'
       - '**/values.yaml'
@@ -32,6 +31,7 @@ jobs:
       # ----------------------------
       # 🚀 1. Build & Test Go Backend
       # ----------------------------
+      
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
