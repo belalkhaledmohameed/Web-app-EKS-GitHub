@@ -82,14 +82,3 @@ Once the initialization is completed, the StatefulSet database pods can safely u
 
 ![Project Logo](images/database.png)
 ======================================================================================================================================================
-This application consists of a set of web services that are responsible for user registration and authentication.
-Users can access these websites and register new accounts. During the registration process, the services send the user data to a backend container, where the data is stored securely in the database.
-When a user performs a login, the application communicates with the backend services to retrieve the stored user information. The system then validates the credentials and returns the related user data associated with that account.
-All user-related operations, including registration and login, are handled through the services, which act as an interface between the users and the database container.
-This design ensures:
-Secure user authentication
-Proper data handling and storage
-Clear separation between the web services and the database layer
-
-![Project Logo](images/auth.png)
-======================================================================================================================================================
