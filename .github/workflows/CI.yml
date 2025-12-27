@@ -8,7 +8,7 @@ on:
     paths-ignore:
      
       - 'kubernetes/**'
-      - 'README.md'
+      - '**/README.md'
       - '**/values.yaml'
 jobs:
   build-test:
