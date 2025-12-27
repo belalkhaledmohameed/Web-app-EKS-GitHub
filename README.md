@@ -92,5 +92,4 @@ Proper data handling and storage
 Clear separation between the web services and the database layer
 
 ![Project Logo](images/auth.png)
-
 ======================================================================================================================================================
