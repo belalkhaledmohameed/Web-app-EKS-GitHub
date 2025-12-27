@@ -67,5 +67,5 @@ Secure Secret Management
 Containerization
 ======================================================================================================================================================
 complete photos of all Steps of Project
-![Project Logo](F:\Web-app-EKS-GitHub\k8s-course-lab-main\images\Project_Steps.png)
+![Project Logo](images\Project_Steps.png)
 
