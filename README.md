@@ -66,6 +66,20 @@ CI/CD Pipelines
 Secure Secret Management
 Containerization
 ======================================================================================================================================================
-complete photos of all Steps of Project
+All Project Steps
 ![Project Logo](images/Project_Steps.png)
+======================================================================================================================================================
+📝 Architecture Note
+This project uses a StatefulSet with a PersistentVolumeClaim (PVC) to ensure data persistence for the database running inside the Kubernetes cluster.
+The PVC is bound to a Persistent Volume, which is used to store the database data outside the container. This guarantees that the data is not lost if the pod restarts or is rescheduled to another node in the cluster.
+The database container is responsible for handling application requests. When a user accesses the application and performs authentication, new data is written and stored persistently through the attached volume.
+Additionally, an Init Job is used to prepare the database environment. This job runs with a dedicated Service Account, which has the required permissions to:
+Initialize the database
+Create the required database user
+Apply initial database configurations or schemas
+The Service Account ensures that database operations are executed securely and with limited permissions, following Kubernetes security best practices.
+Once the initialization is completed, the StatefulSet database pods can safely use the prepared database setup.
+![Project Logo](images/database.png)
+======================================================================================================================================================
+
 
