@@ -1,7 +1,9 @@
+name: Build Cluster Infrastructure 
+
+
 on:
-  push:
-    branches:
-      - Delete_Deploying
+  workflow_dispatch
+
 jobs:
   Delete_Cluster:
     runs-on: ubuntu-latest
