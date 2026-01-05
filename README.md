@@ -131,3 +131,95 @@ Return clean and formatted weather data to the application
 This service is designed to be used as a core component within the application wherever weather information is required.
 
 ![Project Logo](images/weather-service.png)
+======================================================================================================================================================
+🖥️ UI Service
+📌 Overview
+The UI Service is responsible for rendering and serving the application’s user interface.
+It handles incoming client traffic and delivers the frontend content to end users.
+The service works alongside NGINX and an NGINX Ingress Controller to efficiently manage traffic routing and load balancing.
+🎯 Purpose
+The main objectives of the UI Service are:
+Provide the visual interface of the application
+Receive and handle traffic from end users
+Ensure high availability and scalability through load balancing
+Integrate smoothly with backend services via ingress routing
+🧱 Architecture Components
+1️⃣ UI Service
+Hosts the frontend application (Web UI)
+Serves static files and UI assets
+Acts as the entry point for client-side interactions
+2️⃣ NGINX Service
+Acts as a web server and reverse proxy
+Serves UI content efficiently
+Handles HTTP requests before forwarding them internally
+3️⃣ NGINX Ingress Controller
+Manages external access to the services inside the cluster
+Routes incoming traffic to the appropriate UI Service pods
+Performs load balancing across multiple UI Service replicas
+Improves scalability and reliability
+🔧 How It Works
+Clients send HTTP/HTTPS requests to the application
+Requests are received by the NGINX Ingress Controller
+The ingress controller routes traffic to the NGINX Service
+NGINX forwards requests to the appropriate UI Service pod
+The UI Service responds with the requested frontend content
+🌐 Traffic Management
+Incoming traffic is distributed across multiple UI Service instances
+Load balancing ensures:
+Better performance
+Fault tolerance
+High availability
+🔐 Responsibilities
+Serve and manage frontend UI
+Handle client-side traffic
+Integrate with ingress and load balancing mechanisms
+Ensure a smooth and responsive user experience
+🚀 Scalability
+The UI Service can be scaled horizontally
+NGINX Ingress Controller automatically balances traffic between replicas
+Supports high traffic without impacting performance
+
+![Project Logo](images/UI.png)
+======================================================================================================================================================
+🔁 Argo CD Workflow (GitOps Model)
+Argo CD follows the GitOps approach, where Git is the single source of truth for the application state.
+How It Works
+Any change to the application (configuration, deployment, or infrastructure) is committed to the Git repository.
+Argo CD continuously monitors the Git repository.
+Argo CD compares:
+Desired State (defined in Git)
+Live State (currently running in the Kubernetes cluster)
+If a difference is detected, the application becomes OutOfSync.
+Argo CD automatically or manually synchronizes the cluster to match the Desired State defined in Git.
+🎯 Key Benefits
+Ensures consistency between Git and the running environment
+Prevents configuration drift
+Enables automated deployments
+Simplifies rollback by reverting Git commits
+Improves visibility and control over application state
+🧠 In Simple Terms
+You don’t deploy to Kubernetes directly.
+You deploy to Git, and Argo CD makes Kubernetes match Git.
+🔐 State Management
+Desired State: Stored and versioned in Git
+Live State: The actual state running in the cluster
+Argo CD continuously reconciles both states
+🚀 Outcome
+The cluster always reflects what is defined in Git
+Any manual change in the cluster will be detected and reverted
+Deployment becomes predictable, auditable, and secure
+
+![Project Logo](images/argocd.png)
+
+![Project Logo](images/database-pods.png)
+
+![Project Logo](images/weather-auth.png)
+
+![Project Logo](images/weather.png)
+
+![Project Logo](images/UI-Pods.png)
+
+![Project Logo](images/UI-Design.png)
+
+![Project Logo](images/weather-service-status.png)
+
