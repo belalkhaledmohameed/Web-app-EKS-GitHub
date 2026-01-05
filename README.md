@@ -93,3 +93,41 @@ Clear separation between the web services and the database layer
 
 ![Project Logo](images/auth.png)
 ======================================================================================================================================================
+🌦️ Weather Service
+📌 Overview
+Weather Service is a service responsible for retrieving weather conditions from an external Weather API.
+The service receives the required input data, sends a request to the API, and returns the weather information to the main application.
+🎯 Purpose
+The main goals of this service are:
+Fetch current weather data from an external API
+Isolate weather-related logic into a dedicated service
+Make the weather functionality reusable and easy to maintain
+🔧 How It Works
+The application sends a request to the Weather Service
+The service receives the required parameters (such as location details)
+The service sends a request to the external Weather API
+The API responds with weather data
+The service processes and returns the response to the application
+🔗 External API
+The service depends on an external Weather API
+All required parameters are passed from the application to the service
+The service does not store data; it only fetches and returns it
+📥 Input
+The service may accept the following inputs:
+Location (City name or Latitude & Longitude)
+API Key (if required)
+Units (Metric / Imperial)
+📤 Output
+The service returns structured weather data, such as:
+Temperature
+Weather condition (Sunny, Cloudy, Rainy, etc.)
+Humidity
+Wind speed
+🧱 Responsibility
+Handle communication with the Weather API
+Validate request parameters
+Return clean and formatted weather data to the application
+🚀 Usage
+This service is designed to be used as a core component within the application wherever weather information is required.
+
+![Project Logo](images/weather-service.png)
